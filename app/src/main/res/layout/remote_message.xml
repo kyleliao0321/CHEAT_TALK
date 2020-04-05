@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable name="messageText" type="String"></variable>
+        <variable name="messageDate" type="String"></variable>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="60dp"
+        android:clipToPadding="false">
+
+        <TextView
+            android:id="@+id/remote_message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/remote_message_background"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="15dp"
+            android:text="@{messageText}">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/remote_message_text"
+            android:paddingHorizontal="10dp"
+            android:text="@{messageDate}">
+
+        </TextView>
+
+    </RelativeLayout>
+</layout>

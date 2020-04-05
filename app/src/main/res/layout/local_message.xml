@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable name="messageText" type="String"></variable>
+        <variable name="messageDate" type="String"></variable>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="60dp"
+        android:clipToPadding="false">
+
+        <TextView
+            android:id="@+id/local_message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/local_message_background"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="15dp"
+            android:layout_alignParentRight="true"
+            android:text="@{messageText}"></TextView>
+
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:layout_below="@id/local_message_text"
+            android:text="@{messageDate}">
+
+        </TextView>
+
+    </RelativeLayout>
+</layout>
