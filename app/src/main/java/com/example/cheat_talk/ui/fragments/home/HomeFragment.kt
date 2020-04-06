@@ -9,17 +9,22 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.R
 import com.example.cheat_talk.databinding.HomeFragmentBinding
 import com.example.cheat_talk.db.entities.ChatHistoryEntity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class HomeFragment: Fragment() {
+    private lateinit var eventListener: HomeFragmentEventListener
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        eventListener = (requireActivity() as MainActivity).homeFragmentEventListener
+
         val binding: HomeFragmentBinding = HomeFragmentBinding.inflate(inflater, container, false)
 
         val itemTouchHelperCallBack: ItemTouchHelper.SimpleCallback =
@@ -53,18 +58,19 @@ class HomeFragment: Fragment() {
 
     private fun discoveryButtonClick() {
         // TODO: emit the action to main activity, and navigate to device discovery fragment
-        Toast.makeText(requireContext(), "navigate to discovery fragment.", Toast.LENGTH_LONG).show()
+        eventListener.onDiscoveryButtonClick()
     }
 
     private val chatHistoryEventListener: ChatHistoryEventListener = object: ChatHistoryEventListener {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {
             // TODO: emit the action to main activity, to delete the ChatHistory.
-            Toast.makeText(activity, "delete $position", Toast.LENGTH_LONG).show()
+            val swipedChatHistory: ChatHistoryEntity = mockChatHistories()[position]
+            eventListener.onChatHistoryItemSwipedRight(swipedChatHistory)
         }
 
         override fun onClick(chatHistory: ChatHistoryEntity) {
             // TODO: emit the action to main activity, to navigate to chat fragment.
-            Toast.makeText(activity, "${chatHistory.pairedName }", Toast.LENGTH_LONG).show()
+            eventListener.onChatHistoryItemClick(chatHistory)
         }
 
     }

@@ -8,18 +8,18 @@ import androidx.room.PrimaryKey
 class ChatMessageEntity(
     @PrimaryKey
     @NonNull
-    val MID: Int?,
+    val MID: Long?,
     val content: String?,
     val date: String?,
     val local: Boolean?
 ) {
     data class Builder(
-        var MID: Int? = null,
+        var MID: Long? = null,
         var content: String? = null,
         var date: String? = null,
         var local: Boolean? = null
     ) {
-        fun MID(mid: Int) = apply { this.MID = mid }
+        fun MID(mid: Long) = apply { this.MID = mid }
         fun content(content: String) = apply { this.content = content }
         fun date(date: String) = apply { this.date = date }
         fun local(local: Boolean) = apply { this.local = local }

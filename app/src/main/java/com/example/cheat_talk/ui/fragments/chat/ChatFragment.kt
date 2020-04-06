@@ -5,27 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.R
 import com.example.cheat_talk.databinding.ChatFragmentBinding
 import com.example.cheat_talk.db.entities.ChatMessageEntity
 import java.util.*
+import kotlin.properties.Delegates
 
 class ChatFragment: Fragment() {
+    private lateinit var eventListener: ChatFragmentEventListener
     private lateinit var chatMessageAdapter: ChatMessageAdapter
+    private var chatHistoryID by Delegates.notNull<Long>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        eventListener = (requireActivity() as MainActivity).chatFragmentEventListener
+        chatHistoryID = eventListener.onFragmentCreate()
+
         val binding: ChatFragmentBinding = ChatFragmentBinding.inflate(inflater, container, false)
 
         // setup recycler view
-
         chatMessageAdapter = ChatMessageAdapter()
         chatMessageAdapter.messageList = createMockMessages()
 
@@ -45,8 +48,14 @@ class ChatFragment: Fragment() {
         val editTextView: EditText = view!!.findViewById(R.id.message_buffer)
         val message: String? = editTextView.text.toString()
         if (message != null) {
-            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+            val chatMessage: ChatMessageEntity = ChatMessageEntity.Builder()
+                .MID(24353535535L)
+                .content(message)
+                .date(Date().toString())
+                .local(true)
+                .build()
             editTextView.text.clear()
+            eventListener.onSendMessage(chatMessage)
         }
     }
 
@@ -62,7 +71,7 @@ class ChatFragment: Fragment() {
         for ((index, value) in messageContents.withIndex()) {
             val dateString: String = Date().toString()
             chatMessageList.add(ChatMessageEntity.Builder()
-                .MID(index)
+                .MID(index.toLong())
                 .content(value)
                 .date(dateString)
                 .local(index/2 == 0)
