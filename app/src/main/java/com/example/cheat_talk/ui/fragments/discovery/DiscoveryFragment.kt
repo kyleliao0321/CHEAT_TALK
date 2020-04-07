@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.databinding.DiscoveryFragmentBinding
 import com.example.cheat_talk.mockDataObject.MockBluetoothDevice
+import com.example.cheat_talk.viewmodel.ChatViewModel
 
 class DiscoveryFragment: Fragment() {
     private lateinit var eventListener: DiscoveryFragmentEventListener
     private lateinit var deviceAdapter: DeviceAdapter
+    private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

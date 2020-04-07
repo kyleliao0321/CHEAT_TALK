@@ -51,9 +51,9 @@
                 <TextView
                     android:id="@+id/chat_history_item_name"
                     android:layout_width="0dp"
-                    android:layout_weight=".70"
+                    android:layout_weight=".50"
                     android:layout_height="match_parent"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/content_text_medium"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:text="@{chatHistory.pairedName}">
@@ -63,8 +63,9 @@
                     android:id="@+id/chat_history_item_last_date"
                     android:textAlignment="textEnd"
                     android:layout_width="0dp"
-                    android:layout_weight=".30"
+                    android:layout_weight=".50"
                     android:layout_height="match_parent"
+                    android:textSize="@dimen/content_text_small"
                     android:text="@{chatHistory.lastDate}"
                     android:gravity="end">
 
@@ -83,6 +84,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginEnd="5dp"
                 tools:ignore="RtlCompat"
+                android:textSize="@dimen/content_text_small"
                 android:text="@{chatHistory.lastMessage}">
             </TextView>
             

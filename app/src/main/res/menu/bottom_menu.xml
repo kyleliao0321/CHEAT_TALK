@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_home_button"
+        android:icon="@drawable/ic_contacts_white_35dp"
+        android:title="HOME" />
+    <item
+        android:id="@+id/menu_discovery_button"
+        android:icon="@drawable/ic_bluetooth_searching_white_35dp"
+        android:title="DISCOVERY"/>
+</menu>

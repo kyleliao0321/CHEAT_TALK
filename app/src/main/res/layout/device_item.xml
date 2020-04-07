@@ -44,7 +44,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="RtlCompat"
                 android:text="@{device.name}"
-                android:textSize="24sp">
+                android:textSize="@dimen/content_text_medium">
             </TextView>
 
             <TextView
@@ -54,6 +54,7 @@
                 android:textAlignment="textEnd"
                 android:layout_gravity="center_vertical"
                 tools:ignore="RtlCompat"
+                android:textSize="@dimen/content_text_small"
                 android:text="@{device.address}">
             </TextView>
 

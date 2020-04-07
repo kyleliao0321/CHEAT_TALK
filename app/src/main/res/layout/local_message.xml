@@ -22,6 +22,7 @@
             android:paddingVertical="12dp"
             android:paddingHorizontal="15dp"
             android:layout_alignParentRight="true"
+            android:textSize="@dimen/content_text_medium"
             android:text="@{messageText}"></TextView>
 
         <TextView
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
             android:layout_below="@id/local_message_text"
+            android:textSize="@dimen/content_text_xsmall"
             android:text="@{messageDate}">
 
         </TextView>

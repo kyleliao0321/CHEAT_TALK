@@ -21,6 +21,7 @@
             android:background="@drawable/remote_message_background"
             android:paddingVertical="12dp"
             android:paddingHorizontal="15dp"
+            android:textSize="@dimen/content_text_medium"
             android:text="@{messageText}">
 
         </TextView>
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/remote_message_text"
             android:paddingHorizontal="10dp"
+            android:textSize="@dimen/content_text_xsmall"
             android:text="@{messageDate}">
 
         </TextView>

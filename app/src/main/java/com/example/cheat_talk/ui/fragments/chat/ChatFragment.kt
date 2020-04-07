@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.R
 import com.example.cheat_talk.databinding.ChatFragmentBinding
 import com.example.cheat_talk.db.entities.ChatMessageEntity
+import com.example.cheat_talk.viewmodel.ChatViewModel
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -17,6 +19,7 @@ class ChatFragment: Fragment() {
     private lateinit var eventListener: ChatFragmentEventListener
     private lateinit var chatMessageAdapter: ChatMessageAdapter
     private var chatHistoryID by Delegates.notNull<Long>()
+    private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +38,9 @@ class ChatFragment: Fragment() {
         with(binding) {
             chatHistoryName = "Test Name"
             chatMessagesContainer.adapter = chatMessageAdapter
+            backHome.setOnClickListener(View.OnClickListener {
+                goBackHomeClick()
+            })
             sendMessageButton.setOnClickListener(View.OnClickListener {
                 sendMessageClick()
             })
@@ -43,9 +49,13 @@ class ChatFragment: Fragment() {
         return binding.root
     }
 
+    private fun goBackHomeClick() {
+        eventListener.onGoBackHomeClick()
+    }
+
     private fun sendMessageClick() {
         // TODO: emit event to main activity with ChatMessageEntity as argument.
-        val editTextView: EditText = view!!.findViewById(R.id.message_buffer)
+        val editTextView: EditText = requireView().findViewById(R.id.message_buffer)
         val message: String? = editTextView.text.toString()
         if (message != null) {
             val chatMessage: ChatMessageEntity = ChatMessageEntity.Builder()

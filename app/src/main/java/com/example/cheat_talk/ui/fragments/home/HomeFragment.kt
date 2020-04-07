@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +14,12 @@ import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.R
 import com.example.cheat_talk.databinding.HomeFragmentBinding
 import com.example.cheat_talk.db.entities.ChatHistoryEntity
+import com.example.cheat_talk.viewmodel.ChatViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class HomeFragment: Fragment() {
     private lateinit var eventListener: HomeFragmentEventListener
+    private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +27,7 @@ class HomeFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         eventListener = (requireActivity() as MainActivity).homeFragmentEventListener
+        eventListener.onFragmentCreate()
 
         val binding: HomeFragmentBinding = HomeFragmentBinding.inflate(inflater, container, false)
 
@@ -37,9 +41,6 @@ class HomeFragment: Fragment() {
         with(binding) {
             chatHistoryContainer.adapter = chatHistoriesAdapter
             ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(chatHistoryContainer)
-            discoveryButton.setOnClickListener(View.OnClickListener {
-                discoveryButtonClick()
-            })
         }
 
         return binding.root
@@ -54,11 +55,6 @@ class HomeFragment: Fragment() {
                 .lastDate("2020/03/21 20:30")
                 .build()
         return listOf(chatHistory, chatHistory)
-    }
-
-    private fun discoveryButtonClick() {
-        // TODO: emit the action to main activity, and navigate to device discovery fragment
-        eventListener.onDiscoveryButtonClick()
     }
 
     private val chatHistoryEventListener: ChatHistoryEventListener = object: ChatHistoryEventListener {
