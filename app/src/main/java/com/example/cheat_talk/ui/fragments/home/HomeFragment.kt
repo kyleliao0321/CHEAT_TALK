@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class HomeFragment: Fragment() {
     private lateinit var eventListener: HomeFragmentEventListener
     private val viewModel: ChatViewModel by activityViewModels()
+    private lateinit var chatHistoriesAdapter: ChatHistoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,41 +33,30 @@ class HomeFragment: Fragment() {
 
         val binding: HomeFragmentBinding = HomeFragmentBinding.inflate(inflater, container, false)
 
+        chatHistoriesAdapter = ChatHistoriesAdapter(chatHistoryEventListener)
+        viewModel.getChatHistoryList().observe(viewLifecycleOwner, Observer {
+            chatHistoriesAdapter.chatHistories = it
+        })
+
         val itemTouchHelperCallBack: ItemTouchHelper.SimpleCallback =
             ChatHistoryItemHelper(
                 0, ItemTouchHelper.LEFT, chatHistoryEventListener
             )
-        val chatHistoriesAdapter: ChatHistoriesAdapter = ChatHistoriesAdapter(chatHistoryEventListener)
-        chatHistoriesAdapter.chatHistories = mockChatHistories()
 
         with(binding) {
             chatHistoryContainer.adapter = chatHistoriesAdapter
             ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(chatHistoryContainer)
         }
-
         return binding.root
-    }
-
-    private fun mockChatHistories(): List<ChatHistoryEntity> {
-        val chatHistory: ChatHistoryEntity =
-            ChatHistoryEntity.Builder()
-                .HID(2435546464L)
-                .pairedName("Kyle")
-                .lastMessage("Hellow World")
-                .lastDate("2020/03/21 20:30")
-                .build()
-        return listOf(chatHistory, chatHistory)
     }
 
     private val chatHistoryEventListener: ChatHistoryEventListener = object: ChatHistoryEventListener {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {
-            // TODO: emit the action to main activity, to delete the ChatHistory.
-            val swipedChatHistory: ChatHistoryEntity = mockChatHistories()[position]
+            val swipedChatHistory: ChatHistoryEntity = chatHistoriesAdapter.chatHistories[position]
             eventListener.onChatHistoryItemSwipedRight(swipedChatHistory)
         }
 
         override fun onClick(chatHistory: ChatHistoryEntity) {
-            // TODO: emit the action to main activity, to navigate to chat fragment.
             eventListener.onChatHistoryItemClick(chatHistory)
         }
 

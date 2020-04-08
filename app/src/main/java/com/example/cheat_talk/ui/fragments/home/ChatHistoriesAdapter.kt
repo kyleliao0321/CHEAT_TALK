@@ -10,6 +10,10 @@ import com.example.cheat_talk.db.entities.ChatHistoryEntity
 
 class ChatHistoriesAdapter(private val listener: ChatHistoryEventListener): RecyclerView.Adapter<ChatHistoriesAdapter.ViewHolder>() {
     var chatHistories: List<ChatHistoryEntity> = listOf<ChatHistoryEntity>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent.context)

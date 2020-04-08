@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cheat_talk.MainActivity
@@ -27,9 +28,10 @@ class DiscoveryFragment: Fragment() {
 
         val binding: DiscoveryFragmentBinding = DiscoveryFragmentBinding.inflate(inflater, container, false)
 
-        // setup recycler view
         deviceAdapter = DeviceAdapter()
-        deviceAdapter.deviceList = eventListener.onFragmentCreate()
+        viewModel.getNearbyDeviceList().observe(viewLifecycleOwner, Observer {
+            deviceAdapter.deviceList = it
+        })
 
         val itemTouchHelper: ItemTouchHelper.SimpleCallback = DeviceItemTouchHelper(
             0, ItemTouchHelper.RIGHT, deviceSwipeListener
@@ -47,10 +49,8 @@ class DiscoveryFragment: Fragment() {
     }
 
     private fun startDeviceDiscovery() {
-        val deviceList: List<MockBluetoothDevice> = eventListener.onRefreshButtonClick()
-        deviceAdapter.deviceList = deviceList
-        // TODO: notification should done in device list setter
-        deviceAdapter.notifyDataSetChanged()
+        eventListener.onRefreshButtonClick()
+
     }
 
     private val deviceSwipeListener: DeviceSwipeCallBack = object : DeviceSwipeCallBack {

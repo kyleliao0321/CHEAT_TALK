@@ -9,7 +9,11 @@ import com.example.cheat_talk.databinding.DeviceItemBinding
 import com.example.cheat_talk.mockDataObject.MockBluetoothDevice
 
 class DeviceAdapter: RecyclerView.Adapter<DeviceAdapter.ViewHolder>() {
-    lateinit var deviceList: List<MockBluetoothDevice>
+    var deviceList: List<MockBluetoothDevice> = listOf<MockBluetoothDevice>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     inner class ViewHolder(private val binding: DeviceItemBinding): RecyclerView.ViewHolder(binding.root) {
         val foregroundView: View = binding.root.findViewById<View>(R.id.device_item_foreground)

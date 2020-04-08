@@ -33,7 +33,10 @@ class ChatFragment: Fragment() {
 
         // setup recycler view
         chatMessageAdapter = ChatMessageAdapter()
-        chatMessageAdapter.messageList = createMockMessages()
+        viewModel.getChatHistoryMessage(324243535L).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            chatMessageAdapter.messageList = it
+        })
+
 
         with(binding) {
             chatHistoryName = "Test Name"
@@ -54,7 +57,6 @@ class ChatFragment: Fragment() {
     }
 
     private fun sendMessageClick() {
-        // TODO: emit event to main activity with ChatMessageEntity as argument.
         val editTextView: EditText = requireView().findViewById(R.id.message_buffer)
         val message: String? = editTextView.text.toString()
         if (message != null) {
@@ -67,28 +69,5 @@ class ChatFragment: Fragment() {
             editTextView.text.clear()
             eventListener.onSendMessage(chatMessage)
         }
-    }
-
-    private fun createMockMessages(): List<ChatMessageEntity> {
-        val messageContents: List<String> = listOf(
-            "hello",
-            "hello",
-            "hello",
-            "hello"
-        )
-        var chatMessageList: MutableList<ChatMessageEntity> = arrayListOf()
-
-        for ((index, value) in messageContents.withIndex()) {
-            val dateString: String = Date().toString()
-            chatMessageList.add(ChatMessageEntity.Builder()
-                .MID(index.toLong())
-                .content(value)
-                .date(dateString)
-                .local(index/2 == 0)
-                .build()
-            )
-        }
-
-        return chatMessageList
     }
 }

@@ -9,6 +9,10 @@ import com.example.cheat_talk.db.entities.ChatMessageEntity
 
 class ChatMessageAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var messageList: List<ChatMessageEntity> = listOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
     private val LOCAL_MESSAGE_TYPE: Int = 0
     private val REMOTE_MESSAGE_TYPE: Int = 1
 

@@ -74,15 +74,13 @@ class MainActivity : AppCompatActivity() {
             viewModel.updateViewStateToChat()
         }
 
-        override fun onRefreshButtonClick(): List<MockBluetoothDevice> {
+        override fun onRefreshButtonClick() {
             val mockBluetoothDevice: MockBluetoothDevice = MockBluetoothDevice("11-22-33-AA-CC-DD", "Kyle")
-            return listOf(mockBluetoothDevice)
+            viewModel.setNearbyDeviceList(listOf(mockBluetoothDevice))
         }
 
-        override fun onFragmentCreate(): List<MockBluetoothDevice> {
+        override fun onFragmentCreate() {
             viewModel.updateViewStateToDiscovery()
-            val mockBluetoothDevice: MockBluetoothDevice = MockBluetoothDevice("21-32-33-AA-CC-DD", "Jack")
-            return listOf(mockBluetoothDevice, mockBluetoothDevice, mockBluetoothDevice)
         }
     }
 
