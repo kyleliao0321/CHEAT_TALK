@@ -64,9 +64,6 @@ class MainActivity : AppCompatActivity() {
         override fun onChatHistoryItemSwipedRight(chatHistory: ChatHistoryEntity) {
             Toast.makeText(this@MainActivity, "Delete ${chatHistory.pairedName}.", Toast.LENGTH_LONG).show()
         }
-        override fun onFragmentCreate() {
-            viewModel.updateViewStateToHome()
-        }
     }
 
     val discoveryFragmentEventListener: DiscoveryFragmentEventListener = object: DiscoveryFragmentEventListener {
@@ -78,19 +75,9 @@ class MainActivity : AppCompatActivity() {
             val mockBluetoothDevice: MockBluetoothDevice = MockBluetoothDevice("11-22-33-AA-CC-DD", "Kyle")
             viewModel.setNearbyDeviceList(listOf(mockBluetoothDevice))
         }
-
-        override fun onFragmentCreate() {
-            viewModel.updateViewStateToDiscovery()
-        }
     }
 
     val chatFragmentEventListener: ChatFragmentEventListener = object: ChatFragmentEventListener {
-        override fun onFragmentCreate(): Long {
-            // TODO: get room id
-            viewModel.updateViewStateToChat()
-            return 12435464665L
-        }
-
         override fun onSendMessage(chatMessage: ChatMessageEntity) {
             // TODO: write the message into bluetooth socket and db
             Toast.makeText(this@MainActivity, chatMessage.content, Toast.LENGTH_LONG).show()
@@ -129,7 +116,9 @@ class MainActivity : AppCompatActivity() {
                     binding.bottomMenu.visibility = View.VISIBLE
                 }
                 ViewState.Chat -> {
-                    transition.replace(R.id.dual_chat_container, ChatFragment()).commit()
+                    transition
+                        .replace(R.id.dual_master_container, HomeFragment())
+                        .replace(R.id.dual_chat_container, ChatFragment()).commit()
                     binding.bottomMenu.visibility = View.VISIBLE
                 }
             }

@@ -29,7 +29,6 @@ class HomeFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         eventListener = (requireActivity() as MainActivity).homeFragmentEventListener
-        eventListener.onFragmentCreate()
 
         val binding: HomeFragmentBinding = HomeFragmentBinding.inflate(inflater, container, false)
 

@@ -18,7 +18,6 @@ import kotlin.properties.Delegates
 class ChatFragment: Fragment() {
     private lateinit var eventListener: ChatFragmentEventListener
     private lateinit var chatMessageAdapter: ChatMessageAdapter
-    private var chatHistoryID by Delegates.notNull<Long>()
     private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -27,11 +26,9 @@ class ChatFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         eventListener = (requireActivity() as MainActivity).chatFragmentEventListener
-        chatHistoryID = eventListener.onFragmentCreate()
 
         val binding: ChatFragmentBinding = ChatFragmentBinding.inflate(inflater, container, false)
 
-        // setup recycler view
         chatMessageAdapter = ChatMessageAdapter()
         viewModel.getChatHistoryMessage(324243535L).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             chatMessageAdapter.messageList = it
