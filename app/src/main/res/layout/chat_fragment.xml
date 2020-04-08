@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="chatHistoryName"
-            type="String" />
+            name="chatHistory"
+            type="com.example.cheat_talk.db.entities.ChatHistoryEntity"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight=".10"
+                android:padding="10dp"
                 android:background="@color/PrimaryColor">
 
                 <ImageView
@@ -44,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/content_text_large"
                     android:textColor="@color/TextLight"
-                    android:text="Test"/>
+                    android:text="@{chatHistory.pairedName}"/>
 
             </RelativeLayout>
 
@@ -82,6 +83,29 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chat_connect_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="60dp"
+            android:backgroundTint="@color/connect"
+            android:src="@drawable/ic_bluetooth_white_35dp"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chat_disconnect_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="60dp"
+            android:backgroundTint="@color/warning"
+            android:src="@drawable/ic_bluetooth_disabled_white_30dp"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

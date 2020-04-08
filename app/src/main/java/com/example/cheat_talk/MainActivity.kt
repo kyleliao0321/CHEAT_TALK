@@ -21,6 +21,7 @@ import com.example.cheat_talk.ui.fragments.launch.LaunchFragment
 import com.example.cheat_talk.ui.fragments.launch.LaunchFragmentEventListener
 import com.example.cheat_talk.viewmodel.ChatViewModel
 import com.example.cheat_talk.viewmodel.ViewState
+import java.util.*
 import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     val homeFragmentEventListener: HomeFragmentEventListener = object: HomeFragmentEventListener {
         override fun onChatHistoryItemClick(chatHistory: ChatHistoryEntity) {
+            viewModel.viewChatHistory = chatHistory
             viewModel.updateViewStateToChat()
         }
         override fun onChatHistoryItemSwipedRight(chatHistory: ChatHistoryEntity) {
@@ -68,12 +70,42 @@ class MainActivity : AppCompatActivity() {
 
     val discoveryFragmentEventListener: DiscoveryFragmentEventListener = object: DiscoveryFragmentEventListener {
         override fun onDeviceItemSwipeRight(mockBluetoothDevice: MockBluetoothDevice) {
+            /* TODO:
+                Searching in chat histories, find weather connection establish before.
+                Should start connection in service, and update to connecting.
+                Only when connection establish, update to connected.
+             */
+            val newChatHistory = ChatHistoryEntity.Builder()
+                .HID(1111111111L)
+                .pairedName(mockBluetoothDevice.name)
+                .lastMessage("")
+                .lastDate(Date().toString())
+                .build()
+            viewModel.viewChatHistory = newChatHistory
+            viewModel.setConnectedChatHistory(newChatHistory)
             viewModel.updateViewStateToChat()
+            viewModel.updateBluetoothConnectionStateToConnected()
         }
 
         override fun onRefreshButtonClick() {
+            /* TODO:
+                Should start discovery process in service, and update to discovering.
+                When discovering process finish, update to unconnected.
+             */
+            viewModel.updateBluetoothConnectionStateToDiscovering()
             val mockBluetoothDevice: MockBluetoothDevice = MockBluetoothDevice("11-22-33-AA-CC-DD", "Kyle")
             viewModel.setNearbyDeviceList(listOf(mockBluetoothDevice))
+            viewModel.updateBluetoothConnectionStateToUnconnected()
+        }
+
+        override fun onDisconnectButtonClick() {
+            /* TODO:
+                Should start to disconnect current bluetooth connection.
+                When process finish, update to unconnected.
+             */
+            viewModel.setConnectedChatHistory(null)
+            viewModel.updateBluetoothConnectionStateToUnconnected()
+            viewModel.setNearbyDeviceList(listOf())
         }
     }
 
@@ -87,6 +119,26 @@ class MainActivity : AppCompatActivity() {
             if (!isTablet) {
                 viewModel.updateViewStateToHome()
             }
+        }
+
+        override fun onConnectButtonClick(chatHistory: ChatHistoryEntity) {
+            /* TODO:
+                Fetch mac address fro argument, and start bluetooth discovery process.
+                Find if there's same mac address device nearby.
+                True -> Start connection -> update bluetooth connection state into CONNECTED
+                False -> Connection Fail -> update bluetooth connection state into UNCONNECTED
+             */
+            viewModel.setConnectedChatHistory(chatHistory)
+            viewModel.updateBluetoothConnectionStateToConnected()
+        }
+
+        override fun onDisconnectButtonClick() {
+            /* TODO:
+                Disconnect from current connected device
+                Once finish, update into UNCONNECTED, and clean up ViewModel's connectedChatHistory
+             */
+            viewModel.setConnectedChatHistory(null)
+            viewModel.updateBluetoothConnectionStateToUnconnected()
         }
     }
 

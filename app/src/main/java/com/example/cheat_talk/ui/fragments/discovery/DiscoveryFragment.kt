@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.databinding.DiscoveryFragmentBinding
 import com.example.cheat_talk.mockDataObject.MockBluetoothDevice
+import com.example.cheat_talk.viewmodel.BluetoothConnectionState
 import com.example.cheat_talk.viewmodel.ChatViewModel
 
 class DiscoveryFragment: Fragment() {
@@ -43,14 +44,32 @@ class DiscoveryFragment: Fragment() {
             refreshDiscoveryButton.setOnClickListener(View.OnClickListener {
                 startDeviceDiscovery()
             })
+            disconnectedButton.setOnClickListener(View.OnClickListener {
+                disconnectClick()
+            })
         }
 
+        viewModel.bluetoothConnectionState.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                BluetoothConnectionState.CONNECTED -> {
+                    binding.refreshDiscoveryButton.hide()
+                    binding.disconnectedButton.show()
+                }
+                else -> {
+                    binding.refreshDiscoveryButton.show()
+                    binding.disconnectedButton.hide()
+                }
+            }
+        })
         return binding.root
     }
 
     private fun startDeviceDiscovery() {
         eventListener.onRefreshButtonClick()
+    }
 
+    private fun disconnectClick() {
+        eventListener.onDisconnectButtonClick()
     }
 
     private val deviceSwipeListener: DeviceSwipeCallBack = object : DeviceSwipeCallBack {

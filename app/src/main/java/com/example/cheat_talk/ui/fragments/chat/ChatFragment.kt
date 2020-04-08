@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.R
 import com.example.cheat_talk.databinding.ChatFragmentBinding
+import com.example.cheat_talk.db.entities.ChatHistoryEntity
 import com.example.cheat_talk.db.entities.ChatMessageEntity
 import com.example.cheat_talk.viewmodel.ChatViewModel
 import java.util.*
@@ -18,6 +20,7 @@ import kotlin.properties.Delegates
 class ChatFragment: Fragment() {
     private lateinit var eventListener: ChatFragmentEventListener
     private lateinit var chatMessageAdapter: ChatMessageAdapter
+    private var viewChatHistory: ChatHistoryEntity? = null
     private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -34,15 +37,38 @@ class ChatFragment: Fragment() {
             chatMessageAdapter.messageList = it
         })
 
+        viewChatHistory = viewModel.viewChatHistory
+        viewModel.getConnectedChatHistory().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(viewChatHistory == it) {
+                true -> {
+                    binding.chatConnectButton.hide()
+                    binding.chatDisconnectButton.show()
+                    binding.sendMessageButton.setOnClickListener(View.OnClickListener {
+                        sendMessageClick()
+                    })
+                }
+                false -> {
+                    binding.chatConnectButton.show()
+                    binding.chatDisconnectButton.hide()
+                    binding.sendMessageButton.setOnClickListener(View.OnClickListener {
+                        Toast.makeText(requireActivity(), "Cannot send message while disconnected!", Toast.LENGTH_SHORT).show()
+                    })
+                }
+            }
+        })
+
 
         with(binding) {
-            chatHistoryName = "Test Name"
+            chatHistory = viewChatHistory
             chatMessagesContainer.adapter = chatMessageAdapter
             backHome.setOnClickListener(View.OnClickListener {
                 goBackHomeClick()
             })
-            sendMessageButton.setOnClickListener(View.OnClickListener {
-                sendMessageClick()
+            chatConnectButton.setOnClickListener(View.OnClickListener {
+                onConnectButtonClick()
+            })
+            chatDisconnectButton.setOnClickListener(View.OnClickListener {
+                onDisconnectButtonClick()
             })
         }
 
@@ -51,6 +77,14 @@ class ChatFragment: Fragment() {
 
     private fun goBackHomeClick() {
         eventListener.onGoBackHomeClick()
+    }
+
+    private fun onConnectButtonClick() {
+        eventListener.onConnectButtonClick(viewChatHistory!!)
+    }
+
+    private fun onDisconnectButtonClick() {
+        eventListener.onDisconnectButtonClick()
     }
 
     private fun sendMessageClick() {

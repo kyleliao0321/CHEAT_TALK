@@ -9,11 +9,12 @@ import com.example.cheat_talk.mockDataObject.MockBluetoothDevice
 import java.util.*
 
 class ChatViewModel: ViewModel() {
-    var currentChatHistory: ChatHistoryEntity? = null
+    var viewChatHistory: ChatHistoryEntity? = null
+    private val connectedChatHistory = MutableLiveData<ChatHistoryEntity>()
     private val nearbyDeviceList = MutableLiveData<List<MockBluetoothDevice>>()
-    private val bluetoothConnectionState = MutableLiveData<BluetoothConnectionState>()
     private val chatHistoryList = MutableLiveData<List<ChatHistoryEntity>>()
     private val chatHistoryMessage = MutableLiveData<List<ChatMessageEntity>>()
+    val bluetoothConnectionState = MutableLiveData<BluetoothConnectionState>()
     val viewState = MutableLiveData<ViewState>()
 
     init {
@@ -22,12 +23,13 @@ class ChatViewModel: ViewModel() {
         chatHistoryMessage.value= createMockMessages()
         bluetoothConnectionState.value = BluetoothConnectionState.UNCONNECTED
         viewState.value = ViewState.Launch
+        connectedChatHistory.value = null
     }
 
-    fun updateBluetoothConnectionStateToUnconnected() = apply { bluetoothConnectionState.value = BluetoothConnectionState.UNCONNECTED }
-    fun updateBluetoothConnectionStateToConnecting() = apply { bluetoothConnectionState.value = BluetoothConnectionState.CONNECTING }
-    fun updateBluetoothConnectionStateToConnected() = apply { bluetoothConnectionState.value = BluetoothConnectionState.CONNECTED }
-    fun updateBluetoothConnectionStateToDiscovering() = apply { bluetoothConnectionState.value = BluetoothConnectionState.DISCOVERING }
+    fun updateBluetoothConnectionStateToUnconnected() { bluetoothConnectionState.value = BluetoothConnectionState.UNCONNECTED }
+    fun updateBluetoothConnectionStateToConnecting() { bluetoothConnectionState.value = BluetoothConnectionState.CONNECTING }
+    fun updateBluetoothConnectionStateToConnected() { bluetoothConnectionState.value = BluetoothConnectionState.CONNECTED }
+    fun updateBluetoothConnectionStateToDiscovering() { bluetoothConnectionState.value = BluetoothConnectionState.DISCOVERING }
 
     fun updateViewStateToLaunch() {
         if (viewState.value != ViewState.Launch) {
@@ -69,6 +71,14 @@ class ChatViewModel: ViewModel() {
 
     fun getChatHistoryMessage(id: Long): LiveData<List<ChatMessageEntity>> {
         return chatHistoryMessage
+    }
+
+    fun setConnectedChatHistory(chatHistory: ChatHistoryEntity?) {
+        connectedChatHistory.value = chatHistory
+    }
+
+    fun getConnectedChatHistory(): LiveData<ChatHistoryEntity> {
+        return connectedChatHistory
     }
 
     private fun mockChatHistories(): List<ChatHistoryEntity> {
