@@ -1,6 +1,5 @@
 package com.example.cheat_talk
 
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -53,6 +52,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.viewState.observe(this, navigationObserver)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Toast.makeText(applicationContext, "Destroy Activity", Toast.LENGTH_LONG).show()
+    }
+
     val homeFragmentEventListener: HomeFragmentEventListener = object: HomeFragmentEventListener {
         override fun onChatHistoryItemClick(chatHistory: ChatHistoryEntity) {
             viewModel.updateViewStateToChat()
@@ -95,7 +99,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onGoBackHomeClick() {
-            viewModel.updateViewStateToHome()
+            if (!isTablet) {
+                viewModel.updateViewStateToHome()
+            }
         }
     }
 
@@ -110,28 +116,42 @@ class MainActivity : AppCompatActivity() {
 
     private val navigationObserver: Observer<ViewState> = Observer<ViewState> {
         val transition = supportFragmentManager.beginTransaction()
-        when(it) {
-            ViewState.Launch -> {
-                transition.replace(R.id.launch_container, launchFragment).commit()
-                binding.bottomMenu.visibility = View.GONE
-            }
-            ViewState.Home -> {
-                transition.replace(R.id.nav_graph_container, HomeFragment()).commit()
-                binding.bottomMenu.visibility = View.VISIBLE
-            }
-            ViewState.Discovery -> {
-                transition.replace(R.id.nav_graph_container, DiscoveryFragment()).commit()
-                binding.bottomMenu.visibility = View.VISIBLE
-            }
-            ViewState.Chat -> {
-                val chatFragmentContainer = when(isTablet) {
-                    true -> R.id.dual_chat_container
-                    false -> R.id.nav_graph_container
+        if (isTablet) {
+            when(it) {
+                ViewState.Launch -> {
+                    transition.replace(R.id.launch_container, launchFragment).commit()
+                    binding.bottomMenu.visibility = View.GONE
                 }
-                transition.replace(chatFragmentContainer, ChatFragment()).commit()
-                binding.bottomMenu.visibility = when(isTablet) {
-                    true -> View.VISIBLE
-                    false -> View.GONE
+                ViewState.Home -> {
+                    transition.replace(R.id.dual_master_container, HomeFragment()).commit()
+                    binding.bottomMenu.visibility = View.VISIBLE
+                }
+                ViewState.Discovery -> {
+                    transition.replace(R.id.dual_master_container, DiscoveryFragment()).commit()
+                    binding.bottomMenu.visibility = View.VISIBLE
+                }
+                ViewState.Chat -> {
+                    transition.replace(R.id.dual_chat_container, ChatFragment()).commit()
+                    binding.bottomMenu.visibility = View.VISIBLE
+                }
+            }
+        } else {
+            when(it) {
+                ViewState.Launch -> {
+                    transition.replace(R.id.launch_container, launchFragment).commit()
+                    binding.bottomMenu.visibility = View.GONE
+                }
+                ViewState.Home -> {
+                    transition.replace(R.id.nav_graph_container, HomeFragment()).commit()
+                    binding.bottomMenu.visibility = View.VISIBLE
+                }
+                ViewState.Discovery -> {
+                    transition.replace(R.id.nav_graph_container, DiscoveryFragment()).commit()
+                    binding.bottomMenu.visibility = View.VISIBLE
+                }
+                ViewState.Chat -> {
+                    transition.replace(R.id.nav_graph_container, ChatFragment()).commit()
+                    binding.bottomMenu.visibility = View.GONE
                 }
             }
         }
