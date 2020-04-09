@@ -92,10 +92,11 @@ class ChatFragment: Fragment() {
         val message: String? = editTextView.text.toString()
         if (message != null) {
             val chatMessage: ChatMessageEntity = ChatMessageEntity.Builder()
-                .MID(24353535535L)
+                .mid(24353535535L)
                 .content(message)
-                .date(Date().toString())
+                .date(Date())
                 .local(true)
+                .hid(24353535535L)
                 .build()
             editTextView.text.clear()
             eventListener.onSendMessage(chatMessage)

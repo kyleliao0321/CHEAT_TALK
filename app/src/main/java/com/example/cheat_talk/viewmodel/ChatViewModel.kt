@@ -84,10 +84,10 @@ class ChatViewModel: ViewModel() {
     private fun mockChatHistories(): List<ChatHistoryEntity> {
         val chatHistory: ChatHistoryEntity =
             ChatHistoryEntity.Builder()
-                .HID(2435546464L)
+                .hid(2435546464L)
                 .pairedName("Kyle")
                 .lastMessage("Hellow World")
-                .lastDate("2020/03/21 20:30")
+                .lastDate(Date())
                 .build()
         return listOf(chatHistory, chatHistory)
     }
@@ -102,13 +102,13 @@ class ChatViewModel: ViewModel() {
         var chatMessageList: MutableList<ChatMessageEntity> = arrayListOf()
 
         for ((index, value) in messageContents.withIndex()) {
-            val dateString: String = Date().toString()
             chatMessageList.add(
                 ChatMessageEntity.Builder()
-                    .MID(index.toLong())
+                    .mid(index.toLong())
                     .content(value)
-                    .date(dateString)
+                    .date(Date())
                     .local(index/2 == 0)
+                    .hid(index.toLong())
                     .build()
             )
         }

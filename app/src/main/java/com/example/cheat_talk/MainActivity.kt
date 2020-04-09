@@ -76,10 +76,10 @@ class MainActivity : AppCompatActivity() {
                 Only when connection establish, update to connected.
              */
             val newChatHistory = ChatHistoryEntity.Builder()
-                .HID(1111111111L)
+                .hid(1111111111L)
                 .pairedName(mockBluetoothDevice.name)
                 .lastMessage("")
-                .lastDate(Date().toString())
+                .lastDate(Date())
                 .build()
             viewModel.viewChatHistory = newChatHistory
             viewModel.setConnectedChatHistory(newChatHistory)

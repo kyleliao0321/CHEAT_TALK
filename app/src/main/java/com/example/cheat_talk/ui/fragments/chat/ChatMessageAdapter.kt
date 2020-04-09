@@ -54,7 +54,7 @@ class ChatMessageAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(item: ChatMessageEntity) {
             with(binding) {
                 messageText = item.content
-                messageDate = item.date
+                messageDate = item.date.toString()
             }
         }
     }
@@ -62,7 +62,7 @@ class ChatMessageAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(item: ChatMessageEntity) {
             with(binding) {
                 messageText = item.content
-                messageDate = item.date
+                messageDate = item.date.toString()
             }
         }
     }
