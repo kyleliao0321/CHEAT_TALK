@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.updateViewStateToChat()
         }
         override fun onChatHistoryItemSwipedRight(chatHistory: ChatHistoryEntity) {
-            Toast.makeText(this@MainActivity, "Delete ${chatHistory.pairedName}.", Toast.LENGTH_LONG).show()
+            viewModel.deleteChatHistory(chatHistory)
         }
     }
 
@@ -75,12 +75,14 @@ class MainActivity : AppCompatActivity() {
                 Should start connection in service, and update to connecting.
                 Only when connection establish, update to connected.
              */
+            val parsedMacAddress = Util.parseMacAddressToLong(mockBluetoothDevice.address)
             val newChatHistory = ChatHistoryEntity.Builder()
-                .hid(1111111111L)
+                .hid(parsedMacAddress)
                 .pairedName(mockBluetoothDevice.name)
                 .lastMessage("")
                 .lastDate(Date())
                 .build()
+            viewModel.insertChatHistory(newChatHistory)
             viewModel.viewChatHistory = newChatHistory
             viewModel.setConnectedChatHistory(newChatHistory)
             viewModel.updateViewStateToChat()
@@ -112,7 +114,7 @@ class MainActivity : AppCompatActivity() {
     val chatFragmentEventListener: ChatFragmentEventListener = object: ChatFragmentEventListener {
         override fun onSendMessage(chatMessage: ChatMessageEntity) {
             // TODO: write the message into bluetooth socket and db
-            Toast.makeText(this@MainActivity, chatMessage.content, Toast.LENGTH_LONG).show()
+            viewModel.insertChatMessageAndUpdateChatHistory(chatMessage)
         }
 
         override fun onGoBackHomeClick() {

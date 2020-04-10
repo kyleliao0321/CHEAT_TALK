@@ -19,6 +19,9 @@ interface ChatDao {
     @Delete
     fun deleteChatHistory(chatHistory: ChatHistoryEntity)
 
+    @Query("SELECT * FROM chat_history WHERE history_id = :hid")
+    suspend fun getChatHistoryByID(hid: Long): List<ChatHistoryEntity>
+
     @Query("SELECT * FROM chat_history ORDER BY history_id ASC")
     fun getAllChatHistories(): LiveData<List<ChatHistoryEntity>>
 

@@ -1,29 +1,77 @@
 package com.example.cheat_talk.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
+import com.example.cheat_talk.Util
+import com.example.cheat_talk.db.ChatRepository
 import com.example.cheat_talk.db.entities.ChatHistoryEntity
 import com.example.cheat_talk.db.entities.ChatMessageEntity
 import com.example.cheat_talk.mockDataObject.MockBluetoothDevice
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 
-class ChatViewModel: ViewModel() {
-    var viewChatHistory: ChatHistoryEntity? = null
+class ChatViewModel(application: Application) : AndroidViewModel(application) {
+    private val chatRepository: ChatRepository = ChatRepository(application)
     private val connectedChatHistory = MutableLiveData<ChatHistoryEntity>()
     private val nearbyDeviceList = MutableLiveData<List<MockBluetoothDevice>>()
-    private val chatHistoryList = MutableLiveData<List<ChatHistoryEntity>>()
-    private val chatHistoryMessage = MutableLiveData<List<ChatMessageEntity>>()
+    private var chatHistoryList: LiveData<List<ChatHistoryEntity>>
+    private lateinit var chatHistoryMessage: LiveData<List<ChatMessageEntity>>
+    var viewChatHistory: ChatHistoryEntity? = null
     val bluetoothConnectionState = MutableLiveData<BluetoothConnectionState>()
     val viewState = MutableLiveData<ViewState>()
 
     init {
+        chatHistoryList = chatRepository.getAllChatHistories()
         nearbyDeviceList.value = listOf<MockBluetoothDevice>()
-        chatHistoryList.value = mockChatHistories()
-        chatHistoryMessage.value= createMockMessages()
         bluetoothConnectionState.value = BluetoothConnectionState.UNCONNECTED
         viewState.value = ViewState.Launch
         connectedChatHistory.value = null
+    }
+
+    fun setNearbyDeviceList(nearbyDeviceList: List<MockBluetoothDevice>) {
+        this.nearbyDeviceList.value = nearbyDeviceList
+    }
+
+    fun getNearbyDeviceList(): LiveData<List<MockBluetoothDevice>> {
+        return nearbyDeviceList
+    }
+
+    fun setConnectedChatHistory(chatHistory: ChatHistoryEntity?) {
+        connectedChatHistory.value = chatHistory
+    }
+
+    fun getConnectedChatHistory(): LiveData<ChatHistoryEntity> {
+        return connectedChatHistory
+    }
+
+    fun getChatHistoryList(): LiveData<List<ChatHistoryEntity>> {
+        return chatHistoryList
+    }
+
+    fun getChatHistoryMessage(id: Long): LiveData<List<ChatMessageEntity>> {
+        return chatRepository.getAllChatMessagesByID(id)
+    }
+
+    fun insertChatHistory(chatHistory: ChatHistoryEntity) {
+        viewModelScope.launch { chatRepository.insertChatHistory(chatHistory) }
+    }
+
+    fun insertChatMessageAndUpdateChatHistory(chatMessage: ChatMessageEntity) {
+        viewModelScope.launch {
+            val targetHistoryID = chatMessage.HID
+            val targetHistoryList = chatRepository.getChatHistoryByID(targetHistoryID!!)
+            val targetHistory = targetHistoryList[0]
+            chatMessage.MID = Util.setMessagePrimaryKey(targetHistoryID, targetHistory.size)
+            
+            targetHistory.incrementSizeByOne()
+            chatRepository.insertChatMessage(chatMessage)
+            chatRepository.updateChatHistory(targetHistory)
+        }
+    }
+
+    fun deleteChatHistory(chatHistory: ChatHistoryEntity) {
+        viewModelScope.launch { chatRepository.deleteChatHistory(chatHistory) }
     }
 
     fun updateBluetoothConnectionStateToUnconnected() { bluetoothConnectionState.value = BluetoothConnectionState.UNCONNECTED }
@@ -55,64 +103,5 @@ class ChatViewModel: ViewModel() {
         if (viewState.value != ViewState.Chat) {
             viewState.value = ViewState.Chat
         }
-    }
-
-    fun setNearbyDeviceList(nearbyDeviceList: List<MockBluetoothDevice>) {
-        this.nearbyDeviceList.value = nearbyDeviceList
-    }
-
-    fun getNearbyDeviceList(): LiveData<List<MockBluetoothDevice>> {
-        return nearbyDeviceList
-    }
-
-    fun getChatHistoryList(): LiveData<List<ChatHistoryEntity>> {
-        return chatHistoryList
-    }
-
-    fun getChatHistoryMessage(id: Long): LiveData<List<ChatMessageEntity>> {
-        return chatHistoryMessage
-    }
-
-    fun setConnectedChatHistory(chatHistory: ChatHistoryEntity?) {
-        connectedChatHistory.value = chatHistory
-    }
-
-    fun getConnectedChatHistory(): LiveData<ChatHistoryEntity> {
-        return connectedChatHistory
-    }
-
-    private fun mockChatHistories(): List<ChatHistoryEntity> {
-        val chatHistory: ChatHistoryEntity =
-            ChatHistoryEntity.Builder()
-                .hid(2435546464L)
-                .pairedName("Kyle")
-                .lastMessage("Hellow World")
-                .lastDate(Date())
-                .build()
-        return listOf(chatHistory, chatHistory)
-    }
-
-    private fun createMockMessages(): List<ChatMessageEntity> {
-        val messageContents: List<String> = listOf(
-            "hello",
-            "hello",
-            "hello",
-            "hello"
-        )
-        var chatMessageList: MutableList<ChatMessageEntity> = arrayListOf()
-
-        for ((index, value) in messageContents.withIndex()) {
-            chatMessageList.add(
-                ChatMessageEntity.Builder()
-                    .mid(index.toLong())
-                    .content(value)
-                    .date(Date())
-                    .local(index/2 == 0)
-                    .hid(index.toLong())
-                    .build()
-            )
-        }
-
-        return chatMessageList
     }
 }

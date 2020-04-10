@@ -16,7 +16,7 @@ import java.util.*
 class ChatMessageEntity(
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "message_id") val MID: Long?,
+    @ColumnInfo(name = "message_id") var MID: Long?,
     @ColumnInfo(name = "message_content") val content: String?,
     @field:TypeConverters(ChatEntityConverter::class)
     @ColumnInfo(name = "message_date")

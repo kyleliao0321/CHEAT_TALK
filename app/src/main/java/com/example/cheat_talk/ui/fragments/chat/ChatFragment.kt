@@ -32,14 +32,14 @@ class ChatFragment: Fragment() {
 
         val binding: ChatFragmentBinding = ChatFragmentBinding.inflate(inflater, container, false)
 
+        viewChatHistory = viewModel.viewChatHistory
         chatMessageAdapter = ChatMessageAdapter()
-        viewModel.getChatHistoryMessage(324243535L).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.getChatHistoryMessage(viewChatHistory!!.HID!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             chatMessageAdapter.messageList = it
         })
 
-        viewChatHistory = viewModel.viewChatHistory
         viewModel.getConnectedChatHistory().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(viewChatHistory == it) {
+            when(it != null && viewChatHistory!!.HID == it.HID) {
                 true -> {
                     binding.chatConnectButton.hide()
                     binding.chatDisconnectButton.show()
@@ -92,11 +92,10 @@ class ChatFragment: Fragment() {
         val message: String? = editTextView.text.toString()
         if (message != null) {
             val chatMessage: ChatMessageEntity = ChatMessageEntity.Builder()
-                .mid(24353535535L)
                 .content(message)
                 .date(Date())
                 .local(true)
-                .hid(24353535535L)
+                .hid(viewChatHistory!!.HID!!)
                 .build()
             editTextView.text.clear()
             eventListener.onSendMessage(chatMessage)
