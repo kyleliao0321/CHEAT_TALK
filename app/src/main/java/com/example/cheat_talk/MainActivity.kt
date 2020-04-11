@@ -116,7 +116,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onConnectButtonClick(chatHistory: ChatHistoryEntity) {
-            val mockBluetoothDevice = MockBluetoothDevice(chatHistory.HID.toString(), chatHistory.pairedName!!)
+            val macAddressHexString = Util.parseMacAddressToHexString(chatHistory!!.HID!!)
+            val mockBluetoothDevice = MockBluetoothDevice(macAddressHexString, chatHistory.pairedName!!)
             mService.startBluetoothConnecting(mockBluetoothDevice)
         }
 
@@ -214,7 +215,6 @@ class MainActivity : AppCompatActivity() {
                 Constaints.BLUETOOTH_CONNECTED_SUCCESS -> {
                     val mockBluetoothDevice = msg.obj as MockBluetoothDevice
                     val parsedMacAddress = Util.parseMacAddressToLong(mockBluetoothDevice.address)
-                    val chatHistory = viewModel.viewChatHistory
                     val newChatHistory = ChatHistoryEntity.Builder()
                         .hid(parsedMacAddress)
                         .pairedName(mockBluetoothDevice.name)
