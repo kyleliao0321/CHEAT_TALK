@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.cheat_talk.MainActivity
 import com.example.cheat_talk.R
+import kotlinx.coroutines.coroutineScope
 
 class LaunchFragment : Fragment() {
     private lateinit var eventListener: LaunchFragmentEventListener
@@ -24,10 +25,5 @@ class LaunchFragment : Fragment() {
             eventListener.onFinishLaunching()
         })
         return view
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Toast.makeText(requireContext(), "Launch D", Toast.LENGTH_LONG).show()
     }
 }

@@ -9,7 +9,7 @@ object Util {
     }
 
     fun setMessagePrimaryKey(base: Long, size: Int): Long {
-        val idString = base.toString() + size.toShort()
+        val idString = base.toString() + size.toString()
         return idString.toLong()
     }
 }
