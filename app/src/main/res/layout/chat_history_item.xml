@@ -66,7 +66,7 @@
                     android:layout_weight=".50"
                     android:layout_height="match_parent"
                     android:textSize="@dimen/content_text_small"
-                    android:text="@{chatHistory.lastDate.toString()}"
+                    android:text="@{chatHistory.getFormattedDate()}"
                     android:gravity="end">
 
                 </TextView>

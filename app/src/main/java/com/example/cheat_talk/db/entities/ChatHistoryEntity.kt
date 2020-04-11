@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.cheat_talk.Util
 import java.util.*
 
 @Entity(tableName = "chat_history")
@@ -33,5 +34,9 @@ class ChatHistoryEntity (
 
     fun incrementSizeByOne() {
         this.size++
+    }
+
+    fun getFormattedDate(): String {
+        return Util.dateFormatting(lastDate!!)
     }
 }

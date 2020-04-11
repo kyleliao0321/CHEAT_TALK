@@ -2,6 +2,7 @@ package com.example.cheat_talk.db.entities
 
 import androidx.annotation.NonNull
 import androidx.room.*
+import com.example.cheat_talk.Util
 import java.util.*
 
 @Entity(
@@ -37,5 +38,9 @@ class ChatMessageEntity(
         fun local(local: Boolean) = apply { this.local = local }
         fun hid(hid: Long) = apply { this.HID = hid}
         fun build(): ChatMessageEntity = ChatMessageEntity(MID, content, date, local, HID)
+    }
+
+    fun getFormattedDate(): String {
+        return Util.dateFormatting(date!!)
     }
 }

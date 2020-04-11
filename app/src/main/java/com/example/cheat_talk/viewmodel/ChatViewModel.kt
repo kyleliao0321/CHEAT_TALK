@@ -65,6 +65,8 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
             chatMessage.MID = Util.setMessagePrimaryKey(targetHistoryID, targetHistory.size)
             
             targetHistory.incrementSizeByOne()
+            targetHistory.lastMessage = chatMessage.content
+            targetHistory.lastDate = chatMessage.date
             chatRepository.insertChatMessage(chatMessage)
             chatRepository.updateChatHistory(targetHistory)
         }
